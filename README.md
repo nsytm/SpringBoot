@@ -2,8 +2,6 @@
 
 #### 版本说明:
 
-##### springboot 2.7.9
-
-##### jdk 1.8
-
-##### maven 3.8.1
+1. Spring Boot 版本：2.7.9
+2. JDK 版本：JDK 8
+3. Maven 版本：3.8.1
