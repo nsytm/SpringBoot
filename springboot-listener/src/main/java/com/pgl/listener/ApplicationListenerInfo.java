@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author pgl
  * @ClassName ApplicationListenerInfo
- * @Description 使用spring提供的事件监听, 应用启动时打印访问路径
+ * @Description 使用spring提供的事件监听接口, 应用启动时打印访问路径
  * @date:2023/3/17
  */
 @Slf4j
