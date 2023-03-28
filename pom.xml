@@ -25,6 +25,7 @@
     <modules>
         <module>springboot-aop</module>
         <module>springboot-listener</module>
+        <module>springboot-redis</module>
     </modules>
 
     <dependencies>
