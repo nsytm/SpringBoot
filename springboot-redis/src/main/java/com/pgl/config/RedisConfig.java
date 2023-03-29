@@ -36,8 +36,6 @@ public class RedisConfig {
 
         // 使用Jackson2JsonRedisSerializer来序列化和反序列化redis的value值
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = jackson2JsonRedisSerializerConfig();
-        // jackson序列化 默认配置
-        GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
 
         // 使用StringRedisSerializer来序列化和反序列化redis的key值
         StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
@@ -50,11 +48,13 @@ public class RedisConfig {
 
         // value采用jackson序列化方式
         template.setValueSerializer(jackson2JsonRedisSerializer);
-        //template.setValueSerializer(genericJackson2JsonRedisSerializer);
 
         // hash的value也采用jackson序列化方式
         template.setHashValueSerializer(jackson2JsonRedisSerializer);
-        //template.setHashValueSerializer(genericJackson2JsonRedisSerializer);
+
+        // 使用jackson序列化的默认策略
+        //template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        //template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
 
         template.afterPropertiesSet();
 
