@@ -3,7 +3,6 @@ package com.pgl.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
@@ -17,8 +16,17 @@ import java.time.Duration;
 @RestController
 public class RedisController {
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    /**
+     * 基于构造方法注入bean
+     */
+    public RedisController(RedisTemplate<String, Object> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
+
+    //@Autowired
+    //private RedisTemplate<String, Object> redisTemplate;
 
     @GetMapping("/redis/stringTest")
     public String stringTest() {
