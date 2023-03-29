@@ -51,8 +51,6 @@ public class RedisConfig {
 
         // key采用String的序列化方式
         template.setKeySerializer(stringRedisSerializer);
-
-        // hash的key也采用String的序列化方式
         template.setHashKeySerializer(stringRedisSerializer);
 
         // 使用jackson序列化的默认策略
@@ -66,4 +64,4 @@ public class RedisConfig {
 }
 ```
 
-#### 2.待更新。。。
+#### 2.基于Redis实现分布式锁
