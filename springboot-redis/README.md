@@ -65,3 +65,56 @@ public class RedisConfig {
 ```
 
 #### 2.基于Redis实现分布式锁
+
+##### 2.1 基于RedisTemplate实现
+
+```java
+
+@RestController
+public class DistributedLockController {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @GetMapping("/redis/deductStockRed")
+    public String deductStockRedis() {
+
+        String lockKey = "redis:product:id";
+        String uuid = UUID.randomUUID().toString();
+        Boolean bool = redisTemplate.opsForValue().setIfAbsent(lockKey, uuid, 10, TimeUnit.SECONDS);
+        if (Boolean.FALSE.equals(bool)) {
+            return "error";
+        }
+        try {
+            Object value = redisTemplate.opsForValue().get("stock");
+            if (null == value) {
+                log.error("value is not null");
+                return "error";
+            }
+            // 剩余库存
+            int stock = Integer.parseInt(value.toString());
+            if (stock > 0) {
+                int realStock = stock - 1;
+                redisTemplate.opsForValue().set("stock", realStock + "");
+                log.info("扣减成功, 剩余库存: {}", realStock);
+                return "success";
+            } else {
+                log.info("扣减失败, 库存不足");
+                return "error";
+            }
+        } finally {
+            if (uuid.equals(redisTemplate.opsForValue().get(lockKey))) {
+                redisTemplate.delete(lockKey);
+            }
+        }
+
+    }
+
+}
+```
+
+##### 2.2 基于Redisson实现
+
+```java
+
+```

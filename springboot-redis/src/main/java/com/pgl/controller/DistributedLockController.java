@@ -1,6 +1,9 @@
 package com.pgl.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +23,11 @@ public class DistributedLockController {
 
     private final RedisTemplate<String, Object> redisTemplate;
 
-    public DistributedLockController(RedisTemplate<String, Object> redisTemplate) {
+    private final RedissonClient redissonClient;
+
+    public DistributedLockController(RedisTemplate<String, Object> redisTemplate, RedissonClient redissonClient) {
         this.redisTemplate = redisTemplate;
+        this.redissonClient = redissonClient;
     }
 
     /**
@@ -91,5 +97,53 @@ public class DistributedLockController {
         }
 
     }
+
+    /**
+     * 终极版 5.0.0
+     * 基于redisson实现分布式锁
+     */
+    @GetMapping("/redis/deductStockSon")
+    public String deductStockRedisson() {
+
+        String lockKey = "redis:product:id";
+        Boolean bool = redisTemplate.hasKey(lockKey);
+        if (Boolean.TRUE.equals(bool)) {
+            log.error("code is running");
+            return "error";
+        }
+        RLock lock = redissonClient.getLock(lockKey);
+        try {
+            boolean flag = lock.tryLock(1, 10, TimeUnit.SECONDS);
+            if (!flag) {
+                log.error("code is running");
+                return "error";
+            }
+
+            // 业务逻辑
+            Object value = redisTemplate.opsForValue().get("stock");
+            if (null == value) {
+                log.error("value is not null");
+                return "error";
+            }
+            // 剩余库存
+            int stock = Integer.parseInt(value.toString());
+            if (stock > 0) {
+                int realStock = stock - 1;
+                redisTemplate.opsForValue().set("stock", realStock + "");
+                log.info("扣减成功, 剩余库存: {}", realStock);
+                return "success";
+            } else {
+                log.info("扣减失败, 库存不足");
+                return "error";
+            }
+
+        } catch (Exception e) {
+            log.error("error", e);
+            return "error";
+        } finally {
+            lock.unlock();
+        }
+    }
+
 
 }
