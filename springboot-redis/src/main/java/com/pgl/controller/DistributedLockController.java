@@ -74,23 +74,12 @@ public class DistributedLockController {
             return "error";
         }
         try {
-            Object value = redisTemplate.opsForValue().get("stock");
-            if (null == value) {
-                log.error("value is not null");
-                return "error";
-            }
-            // 剩余库存
-            int stock = Integer.parseInt(value.toString());
-            if (stock > 0) {
-                int realStock = stock - 1;
-                redisTemplate.opsForValue().set("stock", realStock + "");
-                log.info("扣减成功, 剩余库存: {}", realStock);
-                return "success";
-            } else {
-                log.info("扣减失败, 库存不足");
-                return "error";
-            }
+
+            // 业务逻辑
+            return deductStock();
+
         } finally {
+            // 防止误删锁
             if (uuid.equals(redisTemplate.opsForValue().get(lockKey))) {
                 redisTemplate.delete(lockKey);
             }
@@ -111,39 +100,49 @@ public class DistributedLockController {
             log.error("code is running");
             return "error";
         }
+        // 获取锁对象
         RLock lock = redissonClient.getLock(lockKey);
         try {
-            boolean flag = lock.tryLock(1, 10, TimeUnit.SECONDS);
+            // 尝试在 5 秒内加锁, 直到锁可用为止
+            boolean flag = lock.tryLock(5, 10, TimeUnit.SECONDS);
             if (!flag) {
                 log.error("code is running");
                 return "error";
             }
 
             // 业务逻辑
-            Object value = redisTemplate.opsForValue().get("stock");
-            if (null == value) {
-                log.error("value is not null");
-                return "error";
-            }
-            // 剩余库存
-            int stock = Integer.parseInt(value.toString());
-            if (stock > 0) {
-                int realStock = stock - 1;
-                redisTemplate.opsForValue().set("stock", realStock + "");
-                log.info("扣减成功, 剩余库存: {}", realStock);
-                return "success";
-            } else {
-                log.info("扣减失败, 库存不足");
-                return "error";
-            }
+            return deductStock();
 
         } catch (Exception e) {
-            log.error("error", e);
+            log.error("code run error", e);
             return "error";
         } finally {
+            // 释放锁
             lock.unlock();
         }
     }
+
+    private String deductStock() {
+        Object value = redisTemplate.opsForValue().get("stock");
+        if (null == value) {
+            log.error("value is not null");
+            return "error";
+        }
+        // 剩余库存
+        int stock = Integer.parseInt(value.toString());
+        if (stock > 0) {
+            int realStock = stock - 1;
+            redisTemplate.opsForValue().set("stock", realStock + "");
+            log.info("扣减成功, 剩余库存: {}", realStock);
+            return "success";
+        } else {
+            log.info("扣减失败, 库存不足");
+            return "error";
+        }
+    }
+
+
+    // TODO: 2023/3/31 锁的key和请求参数
 
 
 }
