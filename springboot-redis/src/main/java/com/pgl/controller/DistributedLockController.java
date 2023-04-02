@@ -106,7 +106,8 @@ public class DistributedLockController {
             // 尝试在 5 秒内加锁, 直到锁可用为止
             boolean flag = lock.tryLock(5, 10, TimeUnit.SECONDS);
             if (!flag) {
-                log.error("code is running");
+                // TODO: 2023/4/2 haskey 是否有必要
+                log.error("code is running, please try again later");
                 return "error";
             }
 
