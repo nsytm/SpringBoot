@@ -1,11 +1,13 @@
 package com.pgl.controller;
 
+import com.pgl.common.RedisConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
@@ -64,13 +66,16 @@ public class DistributedLockController {
      * 问题: 如何处理并发带来的线程安全问题
      * 解决方案: 使用redis分布式锁
      */
-    @GetMapping("/redis/deductStockRed")
-    public String deductStockRedis() {
+    @GetMapping("/redis/deductStockRed/{id}")
+    public String deductStockRedis(@PathVariable("id") Long id) {
 
-        String lockKey = "redis:product:id";
+        String lockKey = RedisConstants.REDIS_PRODUCT + id;
         String uuid = UUID.randomUUID().toString();
+
+        // 加锁
         Boolean bool = redisTemplate.opsForValue().setIfAbsent(lockKey, uuid, 10, TimeUnit.SECONDS);
         if (Boolean.FALSE.equals(bool)) {
+            log.error("code is running, please try again later");
             return "error";
         }
         try {
@@ -78,6 +83,9 @@ public class DistributedLockController {
             // 业务逻辑
             return deductStock();
 
+        } catch (Exception e) {
+            log.error("code run error", e);
+            return "error";
         } finally {
             // 防止误删锁
             if (uuid.equals(redisTemplate.opsForValue().get(lockKey))) {
@@ -95,18 +103,13 @@ public class DistributedLockController {
     public String deductStockRedisson() {
 
         String lockKey = "redis:product:id";
-        Boolean bool = redisTemplate.hasKey(lockKey);
-        if (Boolean.TRUE.equals(bool)) {
-            log.error("code is running");
-            return "error";
-        }
+
         // 获取锁对象
         RLock lock = redissonClient.getLock(lockKey);
         try {
             // 尝试在 5 秒内加锁, 直到锁可用为止
             boolean flag = lock.tryLock(5, 10, TimeUnit.SECONDS);
             if (!flag) {
-                // TODO: 2023/4/2 haskey 是否有必要
                 log.error("code is running, please try again later");
                 return "error";
             }
