@@ -99,10 +99,10 @@ public class DistributedLockController {
      * 终极版 5.0.0
      * 基于redisson实现分布式锁
      */
-    @GetMapping("/redis/deductStockSon")
-    public String deductStockRedisson() {
+    @GetMapping("/redis/deductStockSon/{id}")
+    public String deductStockRedisson(@PathVariable("id") Long id) {
 
-        String lockKey = "redis:product:id";
+        String lockKey = RedisConstants.REDIS_PRODUCT + id;
 
         // 获取锁对象
         RLock lock = redissonClient.getLock(lockKey);
