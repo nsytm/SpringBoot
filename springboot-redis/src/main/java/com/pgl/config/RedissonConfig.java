@@ -32,6 +32,7 @@ public class RedissonConfig {
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
+        // 单节点配置 useSingleServer()
         config.useSingleServer()
                 .setAddress("redis://" + host + ":" + port)
                 .setDatabase(database);
@@ -39,5 +40,9 @@ public class RedissonConfig {
             config.useSingleServer().setPassword(password);
         }
         return Redisson.create(config);
+
+        // 集群模式配置
+        // https://blog.csdn.net/lpping90/article/details/124581896
+
     }
 }
