@@ -148,5 +148,7 @@ public class DistributedLockController {
 
     // TODO: 2023/3/31 锁的key和请求参数
 
+    // TODO: 2023/4/3  Linux环境装redis
+
 
 }
