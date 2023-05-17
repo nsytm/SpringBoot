@@ -19,9 +19,21 @@ public class Root {
     @XmlElement(name = "BASE_DATA")
     private BaseData baseData;
 
-    @XmlElement(name = "META_DATA")
-    @XmlElementWrapper(name = "META_DATA")
-    private List<MetaData> metaData;
+    /**
+     * 瞬态字段不参与 JAXB 的序列化和反序列化
+     */
+    private transient String transientString;
+
+    /**
+     * 静态字段不参与 JAXB 的序列化和反序列化
+     */
+    private static String staticString;
+
+    /**
+     * @XmlTransient 注解不参与 JAXB 的序列化和反序列化
+     */
+    @XmlTransient
+    private String isTransient;
 
 
     @Data
@@ -29,14 +41,15 @@ public class Root {
     @XmlAccessorType(XmlAccessType.FIELD)
     public static class BaseData {
 
-        @XmlElement(name = "USER_CODE")
-        private String userCode;
-
-        @XmlElement(name = "USER_NAME")
+        @XmlAttribute(name = "USER_NAME")
         private String userName;
 
+        @XmlAttribute(name = "USER_CODE")
+        private String userCode;
+
         @XmlElement(name = "SECURITY_INFO")
-        private SecurityInfo securityInfo;
+        @XmlElementWrapper(name = "SECURITY_INFOS")
+        private List<SecurityInfo> securityInfos;
 
 
         @Data
@@ -51,16 +64,6 @@ public class Root {
             private String systemName;
 
         }
-
-    }
-
-    @Data
-    @XmlRootElement(name = "META_DATA")
-    @XmlAccessorType(XmlAccessType.FIELD)
-    public static class MetaData {
-
-        @XmlElement(name = "DEMO_ID")
-        private String demoId;
 
     }
 

@@ -37,8 +37,9 @@ public class XmlDemoController {
         File[] files = originalFile.listFiles();
         if (files != null && files.length > 0) {
             List<File> fileList = new ArrayList<>(Arrays.asList(files));
-            // 文件名称 正序排序
-            Collections.sort(fileList, Comparator.comparing(File::getName));
+            // 文件名称 升序排序
+            fileList.sort(Comparator.comparing(File::getName));
+            // Collections.sort(fileList, Comparator.comparing(File::getName));
             InputStream inputStream = null;
             XmlMessage xmlMessage = null;
             for (File file : fileList) {
@@ -78,36 +79,65 @@ public class XmlDemoController {
     }
 
 
+    /**
+     * JAXB 序列化和反序列化
+     */
     public static void main(String[] args) {
 
         Root root = new Root();
         Root.BaseData baseData = new Root.BaseData();
-        List<Root.MetaData> metaData = new ArrayList<>();
-        Root.MetaData metaDataA = new Root.MetaData();
-        Root.MetaData metaDataB = new Root.MetaData();
-        Root.MetaData metaDataC = new Root.MetaData();
 
-        Root.BaseData.SecurityInfo securityInfo = new Root.BaseData.SecurityInfo();
-        securityInfo.setSystemId("123456789");
-        securityInfo.setSystemName("大神");
+        Root.BaseData.SecurityInfo securityInfoA = new Root.BaseData.SecurityInfo();
+        securityInfoA.setSystemId("Q159");
+        securityInfoA.setSystemName("大神之命");
+
+        Root.BaseData.SecurityInfo securityInfoB = new Root.BaseData.SecurityInfo();
+        securityInfoB.setSystemId("W160");
+        securityInfoB.setSystemName("我即唯一");
+
+        List<Root.BaseData.SecurityInfo> securityInfoList = new ArrayList<>();
+        securityInfoList.add(securityInfoA);
+        securityInfoList.add(securityInfoB);
 
         baseData.setUserName("张三");
-        baseData.setUserCode("zhangsan");
-        baseData.setSecurityInfo(securityInfo);
-
-        metaDataA.setDemoId("A01");
-        metaDataB.setDemoId("B01");
-        metaDataC.setDemoId("C01");
-        metaData.add(metaDataA);
-        metaData.add(metaDataB);
-        metaData.add(metaDataC);
+        baseData.setUserCode("hangman_001");
+        baseData.setSecurityInfos(securityInfoList);
 
         root.setBaseData(baseData);
-        root.setMetaData(metaData);
 
+        /*
+         不参与 JAXB 序列化和反序列化的一些情况:
+         1.瞬态字段和静态字段不参与 JAXB 的序列化和反序列化
+         2.静态字段不参与 JAXB 的序列化和反序列化
+         3.@XmlTransient 注解不参与 JAXB 的序列化和反序列化
+         */
+        root.setTransientString("transientString_001");
+        root.setIsTransient("@XmlTransient 注解");
+
+        // Root对象转XML
         String strXml = XmlUtils.objectToXml(root);
-        System.out.println("Root 对象转 XML: " + strXml);
+        System.out.println("=== Root 对象转 XML:\n" + strXml);
 
+
+        // XML字符串转实体类
+        strXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+                "<ROOT>\n" +
+                "    <BASE_DATA USER_NAME=\"张三\" USER_CODE=\"hangman_001\">\n" +
+                "        <SECURITY_INFOS>\n" +
+                "            <SECURITY_INFO>\n" +
+                "                <SYSTEM_ID>Q159</SYSTEM_ID>\n" +
+                "                <SYSTEM_NAME>大神之命</SYSTEM_NAME>\n" +
+                "            </SECURITY_INFO>\n" +
+                "            <SECURITY_INFO>\n" +
+                "                <SYSTEM_ID>W160</SYSTEM_ID>\n" +
+                "                <SYSTEM_NAME>我即唯一</SYSTEM_NAME>\n" +
+                "            </SECURITY_INFO>\n" +
+                "        </SECURITY_INFOS>\n" +
+                "    </BASE_DATA>\n" +
+                "    <transientString>transientString_001</transientString>\n" +
+                "</ROOT>";
+        Root deBug = XmlUtils.xmlStrToObject(strXml, Root.class);
+        System.out.println("=== XML 字符串转 Root 对象:\n" + deBug);
 
     }
 
