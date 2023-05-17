@@ -15,17 +15,19 @@ import java.util.*;
 
 /**
  * @Author pgl
- * @ClassName XmlController
- * @Description
+ * @ClassName XmlDemoController
+ * @Description Java使用JAXB操作XML
  * @Date:2023/4/14
  */
 @Slf4j
 @RestController
-public class XmlController {
+public class XmlDemoController {
 
+    /**
+     * 读取指定路径的XML文件, 解析入库
+     */
     @GetMapping("/data/parseXmlDemo")
     public String parseXmlDemo() {
-
         // 文件路径
         String filePath = "E:\\001\\demo\\xml file";
         // 文件备份路径
@@ -35,25 +37,20 @@ public class XmlController {
         File[] files = originalFile.listFiles();
         if (files != null && files.length > 0) {
             List<File> fileList = new ArrayList<>(Arrays.asList(files));
-            // 正序排序
-            Collections.sort(fileList, new Comparator<File>() {
-                @Override
-                public int compare(File o1, File o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            });
+            // 文件名称 正序排序
+            Collections.sort(fileList, Comparator.comparing(File::getName));
             InputStream inputStream = null;
             XmlMessage xmlMessage = null;
             for (File file : fileList) {
                 String fileName = file.getName();
-                log.info("XmlController.parseXmlDemo() 读取文件: {}", fileName);
+                log.info("XmlDemoController.parseXmlDemo() 读取文件: {}", fileName);
                 try {
                     log.info("file.toPath(): {}", file.toPath());
                     inputStream = Files.newInputStream(file.toPath());
                     xmlMessage = XmlUtils.parseXml(inputStream, XmlMessage.class);
-                    log.info("XmlController.parseXmlDemo() 解析文件: {}, 文件内容是否为空: {}", fileName, xmlMessage == null ? "空" : "非空");
+                    log.info("XmlDemoController.parseXmlDemo() 解析文件: {}, 文件内容是否为空: {}", fileName, xmlMessage == null ? "空" : "非空");
                 } catch (Exception e) {
-                    log.error("XmlController.parseXmlDemo() 解析文件异常, fileName: " + fileName, e);
+                    log.error("XmlDemoController.parseXmlDemo() 解析文件异常, fileName: " + fileName, e);
                 } finally {
                     IOUtils.closeQuietly(inputStream);
                     try {
@@ -73,7 +70,7 @@ public class XmlController {
                         // 文件数据处理逻辑
                     }
                 } catch (Exception e) {
-                    log.error("XmlController.parseXmlDemo() 文件数据处理异常, fileName: " + fileName, e);
+                    log.error("XmlDemoController.parseXmlDemo() 文件数据处理异常, fileName: " + fileName, e);
                 }
             }
         }
@@ -108,7 +105,7 @@ public class XmlController {
         root.setBaseData(baseData);
         root.setMetaData(metaData);
 
-        String strXml = XmlUtils.objToXml(root);
+        String strXml = XmlUtils.objectToXml(root);
         System.out.println("Root 对象转 XML: " + strXml);
 
 
