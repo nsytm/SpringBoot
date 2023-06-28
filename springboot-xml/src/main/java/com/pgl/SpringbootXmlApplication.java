@@ -13,7 +13,6 @@ public class SpringbootXmlApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(SpringbootXmlApplication.class, args);
-        log.info("JRebel");
     }
 
 }

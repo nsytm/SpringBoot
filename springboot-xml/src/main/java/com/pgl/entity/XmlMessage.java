@@ -8,10 +8,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- * @Author pgl
- * @ClassName XmlMessageMO
- * @Description
- * @Date:2023/4/14
+ * @author pgl
+ * @description XML报文对应实体类
+ * @date 2023/6/28
  */
 @Data
 @XmlRootElement(name = "MESSAGE")
