@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
 
 import java.io.*;
+import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -60,7 +61,7 @@ public class TxtFile {
         // java.lang.IllegalArgumentException: Unknown pattern letter: i
 
         // doGetTwo();
-        // doGetOne();
+        doGetOne();
     }
 
     /**
@@ -68,7 +69,7 @@ public class TxtFile {
      */
     public static void doGetOne() {
         // 查询推送记录表, 查询条件为当天时间, 查询到 batchNo+1, 查询不到 NowDate+001
-        String batchNo = "20230711004";
+        String batchNo = "20230727001";
 
         // 查询人员数据
         List<User> users = listUsers();
@@ -110,7 +111,8 @@ public class TxtFile {
         try {
             // 生成人员表TXT文件
             String usersTxtFileName = basicPath + File.separator + systemCode + "_TABLE_NAME_" + nowDate + "_" + batchNumber + ".txt";
-            writeToFile(usersTxtFileName, formatUsers(users, systemCode, nowDate, batchNumber));
+            // writeToFile(usersTxtFileName, formatUsers(users, systemCode, nowDate, batchNumber));
+            writeToFile(usersTxtFileName, formatUsersDemo(users, systemCode, nowDate, batchNumber));
 
             // 生成OK文件
             String okFileName = basicPath + File.separator + systemCode + "_" + nowDate + "_" + batchNumber + ".ok";
@@ -137,6 +139,45 @@ public class TxtFile {
         users.add(userD);
         return users;
     }
+
+    /**
+     * 人员数据格式化 2.0
+     * 使用反射和泛型动态拼接数据, 替换原先使用实体类get方法拼接
+     * 注意: 这里有一个问题, 如果写入TXT的数据字段顺序需要和表字段一致, 表对应的实体类属性要和表结构顺序保持一致
+     */
+    private static String formatUsersDemo(List<User> users, String systemCode, String nowDate, String batchNumber) {
+        StringBuilder sb = new StringBuilder();
+        for (User user : users) {
+            String prefix;
+            if (null != user.getBranchCode()) {
+                prefix = "3 || " + user.getBranchCode() + " || " + systemCode + " || " + nowDate + batchNumber + " ||";
+            } else {
+                prefix = "3 || " + " || " + systemCode + " || " + nowDate + batchNumber + " ||";
+            }
+            sb.append(prefix);
+            sb.append(formatData(user));
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    private static <T> String formatData(T data) {
+        StringBuilder sb = new StringBuilder();
+        Class<?> dataClass = data.getClass();
+        Field[] fields = dataClass.getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                // 表示可以访问或修改类中的私有字段
+                field.setAccessible(true);
+                Object value = field.get(data);
+                sb.append(appendStr(value));
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        return sb.toString();
+    }
+
 
     /**
      * 人员数据格式化
