@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.pgl</groupId>
-    <artifactId>springboot-demo</artifactId>
+    <artifactId>springboot</artifactId>
     <version>1.0.0</version>
     <name>springboot-demo</name>
     <description>SpringBoot 整合开发框架组件</description>
