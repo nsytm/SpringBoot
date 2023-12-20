@@ -1,6 +1,6 @@
-package com.example.all.demo.annotation.RestControllerAdvice;
+package com.example.demo.annotation.RestControllerAdvice;
 
-import com.example.all.util.StreamUtils;
+import com.example.util.StreamUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;

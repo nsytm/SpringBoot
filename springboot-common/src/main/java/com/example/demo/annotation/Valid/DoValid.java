@@ -1,6 +1,6 @@
-package com.example.all.demo.annotation.Valid;
+package com.example.demo.annotation.Valid;
 
-import com.example.all.query.ValidQuery;
+import com.example.query.ValidQuery;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;

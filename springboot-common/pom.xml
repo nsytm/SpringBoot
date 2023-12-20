@@ -10,9 +10,9 @@
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>springboot-all</artifactId>
+    <artifactId>springboot-common</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>springboot-all</name>
+    <name>springboot-common</name>
     <description>示例代码</description>
 
     <properties>

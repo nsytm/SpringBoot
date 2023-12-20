@@ -1,6 +1,6 @@
-package com.example.all.util;
+package com.example.util;
 
-import com.example.all.common.CommonConstants;
+import com.example.common.CommonConstants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;

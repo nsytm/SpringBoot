@@ -1,4 +1,4 @@
-package com.example.all.query;
+package com.example.query;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

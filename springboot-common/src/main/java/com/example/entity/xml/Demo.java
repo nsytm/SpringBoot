@@ -1,4 +1,4 @@
-package com.example.all.entity.xml;
+package com.example.entity.xml;
 
 /**
  * @author pgl

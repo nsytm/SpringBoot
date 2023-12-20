@@ -1,4 +1,4 @@
-package com.example.all.common;
+package com.example.common;
 
 /**
  * @author pgl
