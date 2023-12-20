@@ -9,10 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @Slf4j
 @SpringBootApplication
-public class SpringbootAllApplication {
+public class SpringbootCommonApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SpringbootAllApplication.class, args);
+        SpringApplication.run(SpringbootCommonApplication.class, args);
         log.info("SpringBoot is running!");
     }
 
