@@ -12,7 +12,7 @@
     <groupId>com.pgl</groupId>
     <artifactId>springboot</artifactId>
     <version>1.0.0</version>
-    <name>springboot-demo</name>
+    <name>springboot</name>
     <description>SpringBoot 整合开发框架组件</description>
 
     <!-- 定义属性值 -->

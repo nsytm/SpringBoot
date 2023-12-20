@@ -1,6 +1,6 @@
-package com.example.all.valid;
+package com.example.valid;
 
-import com.example.all.common.CommonConstants;
+import com.example.common.CommonConstants;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
