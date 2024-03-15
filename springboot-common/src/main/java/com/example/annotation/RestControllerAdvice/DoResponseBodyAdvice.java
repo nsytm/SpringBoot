@@ -1,4 +1,4 @@
-package com.example.demo.annotation.RestControllerAdvice;
+package com.example.annotation.RestControllerAdvice;
 
 import com.example.util.JsonUtils;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.example.demo.annotation.RestControllerAdvice;
+package com.example.annotation.RestControllerAdvice;
 
 /**
  * @author pgl
