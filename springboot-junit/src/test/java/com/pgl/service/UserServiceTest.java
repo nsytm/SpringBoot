@@ -18,7 +18,7 @@ import static org.mockito.ArgumentMatchers.any;
  * @description 描述
  * @date 2024/3/19
  */
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(MockitoExtension.class) // 启用Mockito支持，自动初始化Mockito的环境
 public class UserServiceTest {
 
     @Spy // 创建真实的对象实例，并允许模拟该对象的一些行为（当你想要保留对象的一些实际行为，同时又想模拟它的某些方法时，@Spy就非常有用。）
