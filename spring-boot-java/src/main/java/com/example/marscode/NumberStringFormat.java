@@ -31,6 +31,11 @@ public class NumberStringFormat {
         return sb.append(decimalPart).toString();
     }
 
+    /**
+     * 输入：s = "1294512.12412"
+     * 输出：'1,294,512.12412'
+     * 解释：将输入的数字字符串转换为带千分位逗号的格式，并且保留小数部分和去除无用的零
+     */
     public static void main(String[] args) {
         System.out.println("1,294,512.12412".equals(solution("1294512.12412")));
         System.out.println("123,456,789.99".equals(solution("0000123456789.99")));
