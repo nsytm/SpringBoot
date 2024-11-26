@@ -10,7 +10,6 @@ import java.util.TreeSet;
 public class FindTargetScore {
 
     public static int solution(int n, int[] nums) {
-        int[] a = new int[0];
         // TreeSet 默认升序
         TreeSet<Integer> numTreeSet = new TreeSet<>();
         for (int num : nums) {
