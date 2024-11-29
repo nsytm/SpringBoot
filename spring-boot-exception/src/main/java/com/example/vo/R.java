@@ -1,6 +1,10 @@
 package com.example.vo;
 
+import com.example.exception.IExceptionEnum;
+import com.example.exception.WebResultEnum;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author 天纵神威
@@ -8,6 +12,8 @@ import lombok.Data;
  * @description 统一返回类
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class R<T> {
 
     private int code;
@@ -16,33 +22,42 @@ public class R<T> {
 
     private T data;
 
-    public static <T> R<T> ok(T data) {
-        R<T> r = new R<T>();
-        r.setCode(200);
-        r.setData(data);
-        return r;
+    private R(IExceptionEnum exceptionEnum, T data) {
+        this.code = exceptionEnum.getCode();
+        this.msg = exceptionEnum.getMsg();
+        this.data = data;
     }
 
-    public static <T> R<T> ok(T data, String msg) {
-        R<T> r = new R<T>();
-        r.setCode(200);
-        r.setData(data);
-        r.setMsg(msg);
-        return r;
+    public static <T> R<T> ok() {
+        return new R<>(WebResultEnum.OK, null);
+    }
+
+    public static <T> R<T> ok(T data) {
+        return new R<>(WebResultEnum.OK, data);
+    }
+
+    public static <T> R<T> ok(String msg) {
+        return new R<>(WebResultEnum.OK.getCode(), msg, null);
+    }
+
+    public static <T> R<T> ok(String msg, T data) {
+        return new R<>(WebResultEnum.OK.getCode(), msg, data);
+    }
+
+    public static <T> R<T> fail() {
+        return new R<>(WebResultEnum.INTERNAL_SERVER_ERROR, null);
     }
 
     public static <T> R<T> fail(String msg) {
-        R<T> r = new R<T>();
-        r.setCode(500);
-        r.setMsg(msg);
-        return r;
+        return new R<>(WebResultEnum.INTERNAL_SERVER_ERROR.getCode(), msg, null);
     }
 
     public static <T> R<T> fail(int code, String msg) {
-        R<T> r = new R<T>();
-        r.setCode(code);
-        r.setMsg(msg);
-        return r;
+        return new R<>(code, msg, null);
+    }
+
+    public static <T> R<T> fail(IExceptionEnum exceptionEnum) {
+        return new R<>(exceptionEnum, null);
     }
 
 }
