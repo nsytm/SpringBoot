@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: spring-boot-oss
+
+server:
+  port: 8080
